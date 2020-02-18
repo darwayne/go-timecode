@@ -20,11 +20,11 @@ import (
 )
 
 type RateTestcase struct {
-	Id       int
-	rateNumA int
-	RateDenA int
-	rateNumB int
-	RateDenB int
+	Id       int64
+	rateNumA int64
+	RateDenA int64
+	rateNumB int64
+	RateDenB int64
 	AisLower bool
 }
 

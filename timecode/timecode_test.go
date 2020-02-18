@@ -39,8 +39,8 @@ func ns(v int64) time.Duration {
 
 type TimecodeTestcase struct {
 	Id       string
-	RateNum  int
-	RateDen  int
+	RateNum  int64
+	RateDen  int64
 	Time     time.Duration
 	Offset   time.Duration
 	Second   int64
@@ -290,4 +290,8 @@ func TestOffset(t *testing.T) {
 		tt := New(v.Time, r).Add(v.Offset)
 		v.Check(t, tt)
 	}
+}
+
+func TestStuff(t *testing.T){
+
 }
