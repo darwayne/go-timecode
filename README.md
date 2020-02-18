@@ -35,7 +35,7 @@ Examples
 ```
 import "github.com/darwayne/go-timecode/timecode"
 
-tc := timecode.Parse("00:00:59;29")
+tc, _ := timecode.Parse("00:00:59;29") // error ignored only for example purposes
 tc.SetRate(timecode.Rate30DF)
 tc.Add(2*time.Minute)
 fmt.Println("Frame number at TC", tc, "is", tc.Frame())
