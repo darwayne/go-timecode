@@ -291,7 +291,3 @@ func TestOffset(t *testing.T) {
 		v.Check(t, tt)
 	}
 }
-
-func TestStuff(t *testing.T){
-
-}

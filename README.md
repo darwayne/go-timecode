@@ -1,5 +1,7 @@
 go-timecode
 ===========
+[![GoDoc](https://godoc.org/github.com/darwayne/go-timecode/timecode?status.svg)](https://godoc.org/github.com/darwayne/go-timecode/timecode)
+
 go-timecode is a [Go](http://golang.org/) library for SMPTE ST 12-1-2014 timecodes.
 
 Features
@@ -33,13 +35,24 @@ Examples
 --------
 
 ```
-import "github.com/darwayne/go-timecode/timecode"
+package main
 
-tc, _ := timecode.Parse("00:00:59;29") // error ignored only for example purposes
-tc.SetRate(timecode.Rate30DF)
-tc.Add(2*time.Minute)
-fmt.Println("Frame number at TC", tc, "is", tc.Frame())
+import (
+	"fmt"
+	"time"
 
+	"github.com/darwayne/go-timecode/timecode"
+)
+
+func main() {
+	tc, err := timecode.Parse("00:00:59;29")
+	if err != nil {
+		panic(err)
+	}
+	tc.SetRate(timecode.Rate30DF)
+	tc.Add(2 * time.Minute)
+	fmt.Println("Frame number at TC", tc, "is", tc.Frame())
+}
 ```
 
 
