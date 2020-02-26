@@ -84,6 +84,11 @@ func (t Timecode) IsZero() bool {
 	return t.Uint64()&time_mask == 0
 }
 
+//IsDrop indicates if we are dealing with drop frame content
+func (t Timecode) IsDrop() bool {
+	return t.Rate().IsDrop()
+}
+
 // SetFrame sets the timecode to a new frame number f and keeps the timecode's
 // current rate.
 func (t *Timecode) SetFrame(f int64) Timecode {
@@ -137,7 +142,7 @@ func (t Timecode) Rate() Rate {
 // If s contains a '@' character, Parse treats the following substring as rate
 // expression and uses ParseRate() to read it.
 func Parse(s string) (Timecode, error) {
-
+	originalS := s
 	if s == "" {
 		s = Origin
 	}
@@ -185,6 +190,15 @@ func Parse(s string) (Timecode, error) {
 			}
 		}
 
+		if !IsDrop(originalS) {
+			switch r {
+			case Rate30DF:
+				r = Rate2997NDF
+			case Rate60DF:
+				r = Rate5994NDF
+			}
+		}
+
 		// reverse the adjustment for drop frame timecodes
 		if isDF {
 			d := frames / int64(r.framesPer10Min)
@@ -220,6 +234,12 @@ func Parse(s string) (Timecode, error) {
 	}
 
 	return New(d, r), nil
+}
+
+// IsDrop detects if a timecode is drop frame by checking for
+// the presence of `;`
+func IsDrop(timecode string) bool {
+	return  strings.Contains(timecode, ";")
 }
 
 // FromSMPTE unpacks the SMPTE timecode from tc and also considers the
@@ -342,7 +362,7 @@ func (t Timecode) FrameAtRate(r Rate) int64 {
 	// when rate id is 0 the frame number within the current second
 	// is stored as nanosecond value
 	if r.enum == 0 || r.enum == df {
-		f := int64(r.fps) * t.Second()
+		f := r.fps * t.Second()
 		f += int64(t.Duration() % time.Second)
 		return f
 	}

@@ -50,9 +50,11 @@ const (
 	R_23976        // 24000,1001 (Note: this is NOT a drop-frame edit rate)
 	R_24           // 24,1
 	R_25           // 25,1
+	R_2997NDF      // 30,1
 	R_30           // 30,1
 	R_48           // 48,1
 	R_50           // 50,1
+	R_5994NDF      // 60,1
 	R_60           // 60,1
 	R_96           // 96,1
 	R_100          // 100,1
@@ -74,34 +76,38 @@ const (
 
 // Common edit rate configurations you should use in your code when calling New()
 var (
-	InvalidRate    Rate = Rate{R_MAX, 0, 0, 0, 0, 0}
-	OneFpsRate     Rate = Rate{0, 1, 1, 1, 0, 1 * 600}                             // == 1fps
-	IdentityRate   Rate = Rate{0, 1000000000, 1000000000, 1, 0, 1000000000 * 600}  // == 1ns
-	IdentityRateDF Rate = Rate{df, 1000000000, 1000000000, 1, 0, 1000000000 * 600} // == 1ns
-	Rate23976      Rate = Rate{R_23976, 24, 24000, 1001, 0, 24 * 600}
-	Rate24         Rate = Rate{R_24, 24, 24, 1, 0, 24 * 600}
-	Rate25         Rate = Rate{R_25, 25, 25, 1, 0, 25 * 600}
-	Rate30         Rate = Rate{R_30, 30, 30, 1, 0, 30 * 600}
-	Rate30DF       Rate = Rate{R_30DF, 30, 30000, 1001, 2, 17982}
-	Rate48         Rate = Rate{R_48, 48, 48, 1, 0, 48 * 600}
-	Rate50         Rate = Rate{R_50, 50, 50, 1, 0, 50 * 600}
-	Rate60         Rate = Rate{R_60, 60, 60, 1, 0, 60 * 600}
-	Rate60DF       Rate = Rate{R_60DF, 60, 60000, 1001, 4, 35964}
-	Rate96         Rate = Rate{R_96, 96, 96, 1, 0, 96 * 600}
-	Rate100        Rate = Rate{R_100, 100, 100, 1, 0, 100 * 600}
-	Rate120        Rate = Rate{R_120, 120, 120, 1, 0, 120 * 600}
+	InvalidRate    = Rate{R_MAX, 0, 0, 0, 0, 0}
+	OneFpsRate     = Rate{0, 1, 1, 1, 0, 1 * 600}                             // == 1fps
+	IdentityRate   = Rate{0, 1000000000, 1000000000, 1, 0, 1000000000 * 600}  // == 1ns
+	IdentityRateDF = Rate{df, 1000000000, 1000000000, 1, 0, 1000000000 * 600} // == 1ns
+	Rate23976      = Rate{R_23976, 24, 24000, 1001, 0, 24 * 600}
+	Rate24         = Rate{R_24, 24, 24, 1, 0, 24 * 600}
+	Rate25         = Rate{R_25, 25, 25, 1, 0, 25 * 600}
+	Rate2997NDF    = Rate{R_2997NDF, 30, 30000, 1001, 0, 17982}
+	Rate30         = Rate{R_30, 30, 30, 1, 0, 30 * 600}
+	Rate30DF       = Rate{R_30DF, 30, 30000, 1001, 2, 17982}
+	Rate48         = Rate{R_48, 48, 48, 1, 0, 48 * 600}
+	Rate50         = Rate{R_50, 50, 50, 1, 0, 50 * 600}
+	Rate5994NDF    = Rate{R_5994NDF, 60, 60000, 1001, 0, 35964}
+	Rate60         = Rate{R_60, 60, 60, 1, 0, 60 * 600}
+	Rate60DF       = Rate{R_60DF, 60, 60000, 1001, 4, 35964}
+	Rate96         = Rate{R_96, 96, 96, 1, 0, 96 * 600}
+	Rate100        = Rate{R_100, 100, 100, 1, 0, 100 * 600}
+	Rate120        = Rate{R_120, 120, 120, 1, 0, 120 * 600}
 )
 
-var rates map[int]Rate = map[int]Rate{
+var rates = map[int]Rate{
 	0:       IdentityRate,
 	df:      IdentityRateDF,
 	R_23976: Rate23976,
 	R_24:    Rate24,
 	R_25:    Rate25,
+	R_2997NDF: Rate2997NDF,
 	R_30:    Rate30,
 	R_30DF:  Rate30DF,
 	R_48:    Rate48,
 	R_50:    Rate50,
+	R_5994NDF: Rate5994NDF,
 	R_60:    Rate60,
 	R_60DF:  Rate60DF,
 	R_96:    Rate96,
@@ -165,7 +171,7 @@ func NewFloatRate(f float32) Rate {
 // rate enumeration index when its value is an integer, as floating point
 // rate when s parses as float32 or as rational rate otherwise.
 //
-// If the pased float or rational rate is approximately close to a pre-defined
+// If the passed float or rational rate is approximately close to a pre-defined
 // standard rate, the standard rate's configuration including the appropriate
 // enum id will be used.
 func ParseRate(s string) (Rate, error) {
